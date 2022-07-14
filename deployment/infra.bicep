@@ -1,34 +1,40 @@
-@description('The name of the SQL logical server.')
-param serverName string = uniqueString('sql', resourceGroup().id)
+@description('The environment we are deploying to')
+param environment string
 
-@description('The name of the SQL Database.')
-param sqlDBName string = 'SampleDB'
+@description('The deployment key vault')
+param kvDeployName string
 
-@description('Location for all resources.')
+@description('The deployment key vault resource group')
+param kvDeployRG string
+
+@description('The region into which we are deploying resources')
 param location string = resourceGroup().location
 
-@description('The administrator username of the SQL logical server.')
-param administratorLogin string
+var subscriptionId = subscription().subscriptionId
 
-@description('The administrator password of the SQL logical server.')
-@secure()
-param administratorLoginPassword string
+@description('The deployment key vault.')
+resource kvDeploy 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
+  name: kvDeployName
+  scope: resourceGroup(subscriptionId, kvDeployRG )
+}
 
-resource sqlServer 'Microsoft.Sql/servers@2021-08-01-preview' = {
-  name: serverName
-  location: location
-  properties: {
-    administratorLogin: administratorLogin
-    administratorLoginPassword: administratorLoginPassword
+module kv './kv.bicep' = {
+  name: 'keyVault'
+  params: {
+    administratorLogin: kvDeploy.getSecret('db-username-${environment}')
+    administratorLoginPassword: kvDeploy.getSecret('db-password-${environment}')
+    location: location
+    appKvName: 'classmgrkv-${environment}-19ake'
+    servicePrincipalKvAccess: kvDeploy.getSecret('service-principal-${environment}')
   }
 }
 
-resource sqlDB 'Microsoft.Sql/servers/databases@2021-08-01-preview' = {
-  parent: sqlServer
-  name: sqlDBName
-  location: location
-  sku: {
-    name: 'Standard'
-    tier: 'Standard'
+module db './sql.bicep' = {
+  name: 'sqlDeployment'
+  params: {
+    administratorLogin: kvDeploy.getSecret('db-username-${environment}')
+    administratorLoginPassword: kvDeploy.getSecret('db-password-${environment}')
+    location: location
+    dbName: 'classmgrdb-19ake-${environment}'
   }
 }
