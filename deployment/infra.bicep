@@ -38,3 +38,12 @@ module db './sql.bicep' = {
     dbName: 'classmgrdb-19ake-${environment}'
   }
 }
+
+module vnet './vnet.bicep' = {
+  name: 'vnet1'
+  params: {
+    location: location
+    sqlServer: db
+    keyVault: kv
+  }
+}
