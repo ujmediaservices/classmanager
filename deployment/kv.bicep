@@ -84,3 +84,6 @@ resource dbPasswordSecret 'Microsoft.KeyVault/vaults/secrets@2021-11-01-preview'
     value: administratorLoginPassword
   }
 }
+
+output name string = appKvName
+output id string = kv.id

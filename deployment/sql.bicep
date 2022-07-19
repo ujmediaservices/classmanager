@@ -30,3 +30,6 @@ resource sqlDB 'Microsoft.Sql/servers/databases@2021-08-01-preview' = {
     tier: 'Standard'
   }
 }
+
+output name string = dbName
+output id string = sqlServer.id

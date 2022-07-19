@@ -7,14 +7,8 @@ param vnetAddressPrefix string = '10.0.0.0/16'
 @description('Subnet 1 Prefix')
 param subnet1Prefix string = '10.0.0.0/24'
 
-@description('Subnet 1 Name')
-param subnet1Name string = 'Subnet1'
-
 @description('Subnet 2 Prefix')
 param subnet2Prefix string = '10.0.1.0/24'
-
-@description('Subnet 2 Name')
-param subnet2Name string = 'Subnet2'
 
 @description('Location for all resources.')
 param location string = resourceGroup().location
@@ -25,8 +19,8 @@ param sqlServer object
 @description('Name of our applicaiton KeyVault.')
 param keyVault object
 
-var azureSqlPrivateDnsZone = 'privatelink.${environment().suffixes.sqlServerHostname}'
-var keyVaultPrivateDnsZone = 'privatelink.${environment().suffixes.keyvaultDns}'
+var azureSqlPrivateDnsZone = 'privatelink${environment().suffixes.sqlServerHostname}'
+var keyVaultPrivateDnsZone = 'privatelink${environment().suffixes.keyvaultDns}'
 var privateDnsZoneNames = [
   azureSqlPrivateDnsZone
   keyVaultPrivateDnsZone
@@ -88,7 +82,7 @@ resource virtualNetworkLinks 'Microsoft.Network/privateDnsZones/virtualNetworkLi
 }]
 
 resource sqlPrivateEndpoint 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  name: '${sqlServer.dbName}-sql-pe'
+  name: '${sqlServer.name.value}-sql-pe'
   location: location
   properties: {
     subnet: {
@@ -96,9 +90,9 @@ resource sqlPrivateEndpoint 'Microsoft.Network/privateEndpoints@2020-06-01' = {
     }
     privateLinkServiceConnections: [
       {
-        name: '${sqlServer.dbName}-sql-pe'
+        name: '${sqlServer.name.value}-sql-pe'
         properties: {
-          privateLinkServiceId: sqlServer.id
+          privateLinkServiceId: '${sqlServer.id.value}'
           groupIds: [
             'sqlServer'
           ]
@@ -123,7 +117,7 @@ resource sqlPrivateEndpoint 'Microsoft.Network/privateEndpoints@2020-06-01' = {
 }
 
 resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2020-06-01' = {
-  name: '${keyVault.name}-kv-pe'
+  name: '${keyVault.name.value}-kv-pe'
   location: location
   properties: {
     subnet: {
@@ -131,9 +125,9 @@ resource keyVaultPrivateEndpoint 'Microsoft.Network/privateEndpoints@2020-06-01'
     }
     privateLinkServiceConnections: [
       {
-        name: '${keyVault.name}-kv-pe-conn'
+        name: '${keyVault.name.value}-kv-pe-conn'
         properties: {
-          privateLinkServiceId: keyVault.id
+          privateLinkServiceId: '${keyVault.id.value}'
           groupIds: [
             'vault'
           ]

@@ -31,4 +31,4 @@ if (-Not $rgExists) {
 }
 
 $suffix = Get-Random -Maximum 10000
-$deployResult = New-AzResourceGroupDeployment -Name "ClassManager-$Environment-$suffix" -ResourceGroupName $resourceGroup -TemplateFile "$PSScriptRoot\infra.bicep" -TemplateParameterFile "$PSScriptRoot\deploy-$Environment.json" -DeploymentDebugLogLevel All
+$deployResult = New-AzResourceGroupDeployment -Name "ClassManager-$Environment-$suffix" -ResourceGroupName $resourceGroup -TemplateFile "$PSScriptRoot\infra.bicep" -TemplateParameterFile "$PSScriptRoot\deploy-$Environment.json"
