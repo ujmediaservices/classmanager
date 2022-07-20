@@ -13,17 +13,22 @@ param subnet2Prefix string = '10.0.1.0/24'
 @description('Location for all resources.')
 param location string = resourceGroup().location
 
-@description('Name of our SQL server.')
+@description('SQL Server Bicep module reference..')
 param sqlServer object
 
-@description('Name of our applicaiton KeyVault.')
+@description('KeyVault Bicep module reference.')
 param keyVault object
+
+@description('Azure Container Registry Micep module reference')
+param acr object
 
 var azureSqlPrivateDnsZone = 'privatelink${environment().suffixes.sqlServerHostname}'
 var keyVaultPrivateDnsZone = 'privatelink${environment().suffixes.keyvaultDns}'
+var acrPrivateDnsZone = 'privatelink${environment().suffixes.acrLoginServer}'
 var privateDnsZoneNames = [
   azureSqlPrivateDnsZone
   keyVaultPrivateDnsZone
+  acrPrivateDnsZone
 ]
 
 resource vnet 'Microsoft.Network/virtualNetworks@2021-08-01' = {

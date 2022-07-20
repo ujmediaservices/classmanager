@@ -39,11 +39,20 @@ module db './sql.bicep' = {
   }
 }
 
+module acr './acr.bicep' = {
+  name: 'containerRegistry'
+  params: {
+    acrName: 'classmgracr${environment}'
+    location: location
+  }
+}
+
 module vnet './vnet.bicep' = {
   name: 'vnet1'
   params: {
     location: location
     sqlServer: db
     keyVault: kv
+    acr: acr
   }
 }

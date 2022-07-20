@@ -18,6 +18,7 @@ param location string = resourceGroup().location
 param acrSku string = 'Basic'
 
 // azure container registry
+@description('We are currently not using Private Endpoints for ACR as it requires a Premium subscription. Will change this if it becomes more than a pet project.')
 resource acr 'Microsoft.ContainerRegistry/registries@2019-12-01-preview' = {
   name: acrName
   location: location
