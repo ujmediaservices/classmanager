@@ -1,0 +1,4 @@
+{
+  "SecureConfigurationProvider": "Azure",
+  "KeyVaultName": "classmgrkv-dev-19ake"
+}

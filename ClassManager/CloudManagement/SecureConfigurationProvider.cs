@@ -15,7 +15,7 @@ namespace gll.ClassManager.CloudManagement
     {
         public static IConfigurationProvider Create(JObject jsonCfg)
         {
-            IConfigurationProvider provider = null;
+            IConfigurationProvider? provider = null;
 
             if (!jsonCfg.ContainsKey("SecureConfigurationProvider")) {
                 throw new ArgumentException("Configuration must specify the SecureConfigurationProvider parameter at the top level.");
@@ -26,13 +26,15 @@ namespace gll.ClassManager.CloudManagement
             {
                 throw new ArgumentException("SecureConfigurationProvider parameter cannot be null.");
             }
-            if (cfgProvider?.ToString() == "Azure")
+            if (cfgProvider.ToString() == "Azure")
             {
                 AzureConfigurationProvider azProv = new AzureConfigurationProvider(jsonCfg);
                 provider = azProv; 
-            } else
+            }
+
+            else
             {
-                throw new ArgumentException("SecureCOnfigurationProvider must be one of the following values: Azure");
+                throw new ArgumentException("SecureConfigurationProvider must be one of the following values: Azure");
             }
 
             return provider; 
