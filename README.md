@@ -20,8 +20,6 @@ A course is a description of a learning offering. A class is an instance of a co
 
 ## Authentication
 
-In order to reduce user risk, Class Manager supports login via one-time passwords sent to email. It does not allow permanent passwords and does not store long-lived passwords in the database. 
-
 The app uses JWT to manage and verify valid login sessions. Login sessions expire in 24 hours. If users selected the Remember Me option, sessions will expire after 14 days. 
 
 Class Manager creates and manages its own user database and its own JWT tokens. This keeps user management independent of any cloud provider.
