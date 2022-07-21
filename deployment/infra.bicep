@@ -1,4 +1,4 @@
-@description('The environment we are deploying to')
+@description('The environment we are deploying to. For environments other than dev, the deployment locks down all resources to a vnet using Private Endpoints.')
 param environment string
 
 @description('The deployment key vault')
@@ -11,6 +11,7 @@ param kvDeployRG string
 param location string = resourceGroup().location
 
 var subscriptionId = subscription().subscriptionId
+var lockdownEnvironments = ['staging', 'prod']
 
 @description('The deployment key vault.')
 resource kvDeploy 'Microsoft.KeyVault/vaults@2019-09-01' existing = {
@@ -47,7 +48,8 @@ module acr './acr.bicep' = {
   }
 }
 
-module vnet './vnet.bicep' = {
+@description('Lock down the app for all non-dev environments using Private Endpoints.')
+module vnet './vnet.bicep' = if (contains(lockdownEnvironments, environment)) {
   name: 'vnet1'
   params: {
     location: location
