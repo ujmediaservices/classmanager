@@ -24,6 +24,9 @@ public class AzureConfigurationProviderIntegrationTests
 
     public AzureConfigurationProviderIntegrationTests()
     {
+        // Set scope properties for logging.
+        NLog.LogManager.GetCurrentClassLogger().PushScopeProperty("userid", 0);
+
         jcf = new JSONConfigurationFixture();
     }
 
@@ -70,7 +73,37 @@ public class AzureConfigurationProviderIntegrationTests
     {
         IConfigurationProvider scf = SecureConfigurationProvider.Create(jcf.config);
         Assert.NotNull(scf);
-        string val = scf.GetConfigurationValue("db-username");
+        string val = scf.GetConfigurationValue("db-username").Result;
         Assert.True(val == "dbd0192");
+    }
+
+    [Fact]
+    public void TestNonexistentKeyVaultKey()
+    {
+        IConfigurationProvider scf = SecureConfigurationProvider.Create(jcf.config);
+        Assert.NotNull(scf);
+        try
+        {
+            var val = scf.GetConfigurationValue("ajsljs").Result;
+        } catch (System.AggregateException ex)
+        {
+            Assert.False(ex.InnerException == null); 
+            Assert.True(ex.InnerException.GetType() == typeof(System.ArgumentException));
+        }
+    }
+
+    [Fact]
+    public void TestX509CertRetrieval()
+    {
+        IConfigurationProvider scf = SecureConfigurationProvider.Create(jcf.config);
+        Assert.NotNull(scf);
+        try
+        {
+            X509Certificate2 cert = scf.GetX509Certificate("ajsljs").Result;
+        } catch (System.AggregateException ex)
+        {
+            Assert.False(ex.InnerException == null); 
+            Assert.True(ex.InnerException.GetType() == typeof(System.ArgumentException));
+        }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using Newtonsoft.Json.Linq;
+using System.Security.Cryptography.X509Certificates;
 
 namespace gll.ClassManager.CloudManagement
 {
 
     public interface IConfigurationProvider
     {
-        string GetConfigurationValue(string key);
+        Task<string> GetConfigurationValue(string key);
+        Task<X509Certificate2> GetX509Certificate(string key);
     }
     
     /// <summary>
