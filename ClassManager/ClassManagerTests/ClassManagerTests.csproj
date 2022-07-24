@@ -24,6 +24,7 @@
   <ItemGroup>
     <ProjectReference Include="..\ClassManagerAPI\ClassManagerAPI.csproj" />
     <ProjectReference Include="..\CloudManagement\CloudManagement.csproj" />
+    <ProjectReference Include="..\Security\Security.csproj" />
   </ItemGroup>
 
   <ItemGroup>

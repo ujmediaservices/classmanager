@@ -97,6 +97,17 @@ public class AzureConfigurationProviderIntegrationTests
     {
         IConfigurationProvider scf = SecureConfigurationProvider.Create(jcf.config);
         Assert.NotNull(scf);
+        
+        X509Certificate2 cert = scf.GetX509Certificate("JWTSigningCert").Result;
+
+        Assert.NotNull(cert);
+    }
+
+    [Fact]
+    public void TestX509CertRetrievalBadKey()
+    {
+        IConfigurationProvider scf = SecureConfigurationProvider.Create(jcf.config);
+        Assert.NotNull(scf);
         try
         {
             X509Certificate2 cert = scf.GetX509Certificate("ajsljs").Result;
